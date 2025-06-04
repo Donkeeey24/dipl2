@@ -22,17 +22,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-B_PARAMS = dict(
-    host=os.getenv("POSTGRES_HOST", "timescaledb"),
-    database=os.getenv("POSTGRES_DB", "yourdb"),
-    user=os.getenv("POSTGRES_USER", "youruser"),
-    password=os.getenv("POSTGRES_PASSWORD", "yourpassword"),
-)
+# Nové proměnné prostředí
+PG_HOST = os.environ.get('PG_HOST', 'localhost')
+PG_DB = os.environ.get('PG_DB', 'yourdb')
+PG_USER = os.environ.get('PG_USER', 'youruser')
+PG_PASS = os.environ.get('PG_PASS', 'yourpassword')
+
+print("DEBUG PG_HOST:", PG_HOST)
+print("DEBUG PG_DB:", PG_DB)
+print("DEBUG PG_USER:", PG_USER)
+print("DEBUG PG_PASS:", PG_PASS)
 
 def get_db():
-    return psycopg2.connect(**DB_PARAMS)
-
-print("DEBUG ENV:", {k: os.environ[k] for k in os.environ if "POSTGRES" in k})
+    return psycopg2.connect(
+        host=PG_HOST,
+        dbname=PG_DB,
+        user=PG_USER,
+        password=PG_PASS
+    )
 
 class Token(BaseModel):
     access_token: str

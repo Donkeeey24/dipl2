@@ -18,3 +18,5 @@ CREATE TABLE IF NOT EXISTS measurements (
     measured_at TIMESTAMPTZ,
     PRIMARY KEY (device_eui, measurement_id, measured_at)
 );
+
+CREATE DATABASE admin_ovo OWNER admin_ovo;

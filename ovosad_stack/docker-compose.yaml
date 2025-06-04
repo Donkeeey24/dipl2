@@ -4,16 +4,16 @@ services:
     image: timescale/timescaledb:latest-pg14
     container_name: timescaledb
     environment:
-      POSTGRES_USER: youruser
-      POSTGRES_PASSWORD: yourpassword
-      POSTGRES_DB: yourdb
+      POSTGRES_USER: admin_ovo
+      POSTGRES_PASSWORD: Admn_1588946
+      POSTGRES_DB: Ovosad_db
     ports:
       - "5432:5432"
     volumes:
       - timescaledb_data:/var/lib/postgresql/data
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "youruser"]
+      test: ["CMD", "pg_isready", "-U", "admin_ovo"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -23,13 +23,21 @@ services:
     container_name: mosquitto
     ports:
       - "1883:1883"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+
 
   parser:
     build: ./parser
     container_name: parser
+    environment:
+      - PG_USER=admin_ovo
+      - PG_PASS=Admn_1588946
+      - PG_DB=Ovosad_db
+      - PG_HOST=timescaledb
     depends_on:
-      - timescaledb
       - mosquitto
+      - timescaledb
 
   backend:
     build: ./backend
@@ -38,10 +46,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - POSTGRES_USER=youruser
-      - POSTGRES_PASSWORD=yourpassword
-      - POSTGRES_DB=yourdb
-      - POSTGRES_HOST=timescaledb
+      - PG_USER=admin_ovo
+      - PG_PASS=Admn_1588946
+      - PG_DB=Ovosad_db
+      - PG_HOST=timescaledb
     depends_on:
       - timescaledb
 
